@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "Unidad 1"
+		},
+		{
+			"path": "Unidad 4"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"string_view": "cpp",
+			"ostream": "cpp"
+		}
+	}
+}
