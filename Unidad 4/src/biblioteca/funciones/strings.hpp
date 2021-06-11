@@ -18,7 +18,7 @@ int length(string s)
    return i;
 }
 
-int charCount(string s, char c) // REVISAR no anda
+int charCount(string s, char c)
 {
    int i, veces;
 
@@ -35,30 +35,29 @@ int charCount(string s, char c) // REVISAR no anda
 
 string substring(string s, int d, int h)
 {
-   int i;
+   int i = 0;
+   string aux;
 
-   for (i = 0; s[i] != '\0'; i++)
+   for (i = d; i < h; i++)
    {
-      if (i >= d && i < h)
-      {
-         cout << s[i];
-      }
+      aux += s[i];
    }
 
-   return "";
+   return aux;
 }
 
 string substring(string s, int d) // ok
 {
-   int i;
+   int i = 0;
+   string aux;
 
-   for (i = 0; s[i] != '\0'; i++)
+   for (i = d; i < length(s); i++)
    {
-      if (i >= d)
-      {
-         cout << s[i];
-      }
+      aux += s[i];
    }
+
+   return aux;
+
    return "";
 }
 
@@ -92,51 +91,113 @@ int indexOf(string s, char c, int offSet) // ok
    return 0;
 }
 
-int indexOf(string s, string toSearch) // ok   //REVISAR  no anda
+int indexOf(string s, string toSearch)
 {
-   int i, j, aparece;
+   int a, j = 0;
 
-   j = 0;
-
-   for (i = 0; toSearch[j] == '\0'; i++)
+   for (int i = 0; i <= length(s); i++)
    {
-      if (toSearch[j] == '\0')
+      if (s[i] == toSearch[0])
       {
-         break;
-      }
-      if (s[i] == toSearch[j])
-      {
-         aparece++;
-      }
+         a = i;
 
-      j++;
+         while (s[i] == toSearch[j] && j < length(toSearch))
+         {
+            i++;
+            j++;
+
+            if (j == length(toSearch))
+            {
+
+               return a;
+               break;
+            }
+         }
+         i = a;
+      }
    }
 
-   return i - aparece;
+   return -1;
 }
 
 int indexOf(string s, string toSearch, int offset) // ok
 {
+   int i, a, j = 0;
+   for (i = 0; i <= length(s); i++)
+   {
+      if (i > offset && s[i] == toSearch[0])
+      {
+         a = i;
+
+         while (s[i] == toSearch[j] && j < length(toSearch))
+         {
+            i++;
+            j++;
+
+            if (j == length(toSearch))
+            {
+
+               return a;
+               break;
+            }
+         }
+         i = a;
+      }
+   }
    return 0;
 }
 
 int lastIndexOf(string s, char c)
 {
-   return 0;
+   int i;
+
+   for (i = length(s); i >= 0; i--)
+   {
+
+      if (s[i] == c)
+      {
+         return i;
+         break;
+      }
+   }
+   return -1;
 }
 
 int indexOfN(string s, char c, int n)
 {
-   return 0;
+   int i, veces = 0;
+
+   for (i = 0; i <= length(s); i++)
+   {
+      if (s[i] == c)
+      {
+         veces++;
+
+         if (veces == n)
+         {
+            return i;
+            break;
+         }
+      }
+   }
+   return -1;
 }
 
 int charToInt(char c)
 {
+   /*
    int numero;
 
    numero = c - 48;
 
    return numero;
+   */
+
+   int i = '0';
+   int n = c;
+   int resultado = n - i;
+
+   return resultado;
 }
 
 char intToChar(int i)
@@ -238,15 +299,16 @@ int stringToInt(string s, int b) // ok
 
 int stringToInt(string s) // ok
 {
-   int parseInt, j;
+
+   int parseInt = 0, j = 0;
    int longitud = length(s) - 1;
 
-   char i = 0;
+   int i = 0;
 
    for (j = longitud; j >= 0; j--)
    {
 
-      parseInt = parseInt + (s[j] - '0') * potencia(10, i);
+      parseInt = parseInt + (charToInt(s[j]) * potencia(10, i));
       i++;
    }
 
@@ -391,83 +453,22 @@ string replace(string s, char oldChar, char newChar)
    return s;
 }
 
-string insertAt(string s, int pos, char c) // NO SALE
+string insertAt(string s, int pos, char c)
 {
 
-   char primera[length(s)];
-   char segunda[length(s) + 1];
-   int j = 0;
-
-   for (int i = 0; i < length(s) + 1; i++)
-   {
-      primera[i] = s[i];
-      if (i < pos)
-      {
-         segunda[j] = primera[i];
-         j++;
-      }
-
-      if (i == pos)
-      {
-         segunda[j] = c;
-         j++;
-      }
-
-      if (i > pos)
-      {
-         segunda[j] = primera[i - 1];
-         j++;
-      }
-   }
-   segunda[j] = '\0';
-
-   s = segunda;
-
-   return s;
-
-   /* SOLUCION 
-
-   string insertAt(string s, int pos, char c)
-{
-   string r = substring (s,0, pos)+ c + substring(s,pos) ;
+   string r = substring(s, 0, pos) + c + substring(s, pos);
    return r;
-}
-   
-
-
-   */
 }
 
 string removeAt(string s, int pos)
 {
-   char primera[length(s)];
-   char segunda[length(s) + 1];
-   int j = 0;
-
-   for (int i = 0; i < length(s); i++)
-   {
-      primera[i] = s[i];
-      if (i < pos || i > pos)
-      {
-         segunda[j] = primera[i];
-         j++;
-      }
-
-      if (i == pos)
-      {
-
-         segunda[j + 1] = primera[i];
-      }
-   }
-   segunda[j] = '\0';
-
-   s = segunda;
-
-   return s;
+   string r = substring(s, 0, pos) + substring(s, pos + 1);
+   return r;
 }
 
 string ltrim(string s)
 {
+
    int largo = length(s);
    int i = 0;
 
@@ -477,20 +478,6 @@ string ltrim(string s)
    }
 
    return substring(s, i, largo);
-   /*  Profe
-
-    int largo = length(s);
-   int i = 0;
-
-   while (s[i] != ' ')
-   {
-      i++;
-   }
-
-   return substring(s, i, largo);
-   
-
-   */
 }
 
 string rtrim(string s)
@@ -505,16 +492,10 @@ string rtrim(string s)
    return substring(s, 0, largo + 1);
 }
 
-string trim(string s) // no anda, deberia andar con ltrim(rtrim(s))
+string trim(string s)
 {
-   int largo = length(s) - 1;
 
-   while (s[largo] == ' ')
-   {
-      largo--;
-   }
-
-   return ltrim(ltrim(substring(s, 0, largo + 1)));
+   return rtrim(ltrim(s));
 }
 
 string replicate(char c, int n)

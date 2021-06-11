@@ -43,45 +43,11 @@ void addToken(string &s, char sep, string t)
 
 string getTokenAt(string s, char sep, int i)
 {
-   int veces = 0;
-   int k = 0, f = 0;
-   string aux1, aux2;
-   for (k = 0; veces < (i + 1); k++)
-   {
-
-      aux1 += s[k];
-      if (s[k + 1] == sep || s[k + 1] == '\0')
-      {
-         veces++;
-         if (veces == i + 1)
-         {
-
-            break;
-         }
-
-         aux1 = aux2;
-      }
-   }
-
-   while (aux1[f] == sep)
-   {
-      f++;
-   }
-
-   return substring(aux1, f, length(aux1));
-
-   return aux1;
-}
-
-void removeTokenAt(string &s, char sep, int i) // Funciona una sola vez y con i < 0   :((((
-{
-   string aux, aux2;
-   int veces = 0;
+   int veces = 0, desde = 0, hasta = 0;
    for (int j = 0; j <= length(s); j++)
    {
-      aux += s[j];
 
-      if (s[j] == sep || s[j] == '\0')
+      if (s[j] == sep)
       {
          veces++;
       }
@@ -90,109 +56,109 @@ void removeTokenAt(string &s, char sep, int i) // Funciona una sola vez y con i 
       {
          if (i == 0)
          {
-            /*
-            while (aux[j] == sep)
-            {
-               f++;
-            }
-            s = substring(s, j, f + 1);
-            */
+            desde = j;
          }
-         aux[j] = aux2[0];
-      }
-   }
-
-   s = aux;
-}
-
-void setTokenAt(string &s, char sep, string t, int i) // revisar Add token y/o getToken
-{
-
-   string x = "";
-   for (int j = 0; j < tokenCount(s, sep); j++)
-   {
-
-      if (j != i)
-      {
-         string w = getTokenAt(s, sep, j);
-
-         addToken(x, sep, w);
-      }
-
-      else
-      {
-         addToken(x, sep, t);
-      }
-   }
-
-   s = x;
-
-   /*
-   FORMA DIFICL.
-
-   int p1,p2; 
-   char sep1;
-   char sep2;
-
-   if(i==0)
-   {
-      p1=0;
-      sep1="";
-     
-   }
-
-   else
-   {
-      p1 = indexOfN(s,sep,i);
-      sep1= charToString(sep);
-   }
-
-  
-   string s1 = substring(s, 0, p1);
-
-   sep2 = charToString(sep);
-   p2 = indexOfN(s,sep,i+1);
-   string s2 = substring(s, p2+1),
-
-   string x = sep1 + s1 + t + sep2 + s2;
-
-   s=x;
-
-   
-  */
-}
-
-int findToken(string s, char sep, string t) // revisar para ultimo token y xq hay q restar 2;
-{
-   string aux;
-   int a = 0;
-   for (int i = 0; i <= length(s); i++)
-   {
-      aux += s[i];
-      int j = 0;
-      if (s[i] == t[j])
-      {
-         int k = i;
-         while (s[i] == t[j] && j < length(t))
-         {
-            j++;
-            i++;
-            aux += s[i];
-         }
-         if (j == length(t))
-         {
-            a = tokenCount(aux, sep) - 2;
-            break;
-         }
-
          else
          {
-            i = k;
+            desde = j + 1;
+         }
+
+         veces++;
+      }
+
+      if (veces == i + 1)
+      {
+         hasta = j + 1;
+      }
+   }
+
+   return substring(s, desde, hasta);
+}
+
+void removeTokenAt(string &s, char sep, int i)
+{
+   int veces = 0, desde = 0, hasta = 0;
+   for (int j = 0; j <= length(s); j++)
+   {
+
+      if (s[j] == sep)
+      {
+         veces++;
+      }
+
+      if (veces == i)
+      {
+         if (i == 0)
+         {
+            desde = j;
+         }
+         else
+         {
+            desde = j + 1;
+         }
+
+         veces++;
+      }
+
+      if (veces == i + 1)
+      {
+         hasta = j + 1;
+      }
+   }
+   s = substring(s, 0, desde) + substring(s, hasta + 1);
+}
+
+void setTokenAt(string &s, char sep, string t, int i)
+{
+   int veces = 0, desde = 0;
+   for (int j = 0; j <= length(s); j++)
+   {
+
+      if (s[j] == sep)
+      {
+         veces++;
+      }
+
+      if (veces == i)
+      {
+         if (i == 0)
+         {
+            desde = j;
+         }
+         else
+         {
+            desde = j + 1;
+         }
+
+         veces++;
+      }
+   }
+   s = substring(s, 0, desde) + t + sep + substring(s, desde);
+}
+
+int findToken(string s, char sep, string t)
+{
+   int coincide = 0;
+   for (int j = 0; j <= length(s); j++)
+   {
+      string a = getTokenAt(s, sep, j);
+
+      for (int n = 0; n <= length(t); n++)
+      {
+         if (a[n] == t[n])
+         {
+            coincide++;
+         }
+
+         if (coincide == length(t) && coincide == length(a))
+         {
+            return j;
+            break;
          }
       }
    }
 
-   return a;
+   return -1;
 }
 
 int valorNumerico(string s)

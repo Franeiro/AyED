@@ -17,12 +17,29 @@ using namespace std;
 int main()
 {
 
-   string s = "John|Paul|George|Ringo|Fran";
-   char sep = '|';
-   string t = "Ringo";
-   int p = findToken(s, sep, t);
+   FILE *arch;
 
-   cout << p << endl;
+   arch = fopen("Demo.DAT", "w+b");
+
+   write<short>(arch, 26598);
+   write<short>(arch, 6789);
+   write<short>(arch, 0000);
+
+   fclose(arch);
+
+   arch = fopen("Demo.DAT", "r+b");
+   short s = read<short>(arch);
+
+   while (!feof(arch))
+
+   {
+      cout << s << endl;
+      read<short>(arch);
+   }
+
+   fclose(arch);
+
+   return 0;
 }
 
 #endif
