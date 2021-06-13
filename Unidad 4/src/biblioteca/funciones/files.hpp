@@ -21,7 +21,7 @@ T read(FILE *f)
 template <typename T>
 void seek(FILE *f, int n)
 {
-   fseek(f, n);
+   fseek(f, n, SEEK_CUR);
 }
 
 template <typename T>
