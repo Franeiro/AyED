@@ -42,7 +42,7 @@ void ingresoCalificacion()
 }
 
 // VERSION 1. EL arhivo esta ordenado por asignatura.
-/*
+
 int main()
 {
     ingresoCalificacion();
@@ -77,8 +77,7 @@ int main()
 
     return 0;
 }
-*/
-/*
+
 //Version 2. EL archivo no se encuentra ordenado y no se saben cuantas asignaturas hay
 
 Coll<Estad> collEstad = coll<Estad>();
@@ -143,7 +142,6 @@ int main()
 
     return 0;
 }
-*/
 
 //Version 3.
 //Se agrega ASIGNATURAS.dat, que aporta informacion complementaria a las asignaturas

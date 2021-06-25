@@ -17,8 +17,8 @@ using namespace std;
 
 void mostrarCantDeVuelosPorCiudad();
 int vuelosParaCiudad(int);
-int  capacidadDelVuelo(int, int);
-void hacerReserva();
+void mostrarPlazasRechazadas();
+int capacidadMenosCantidad(int, int);
 
 int main()
 {
@@ -55,9 +55,9 @@ int main()
     FILE *pruebita2 = fopen("RESERVAS.dat", "wb");
 
     Reserva r;
-    r = reserva(1, 1, 2000);
-    fwrite(&r, sizeof(Reserva), 1, pruebita2);
     r = reserva(3, 2, 150);
+    fwrite(&r, sizeof(Reserva), 1, pruebita2);
+    r = reserva(1, 1, 2000);
     fwrite(&r, sizeof(Reserva), 1, pruebita2);
     r = reserva(2, 1, 50);
     fwrite(&r, sizeof(Reserva), 1, pruebita2);
@@ -68,8 +68,7 @@ int main()
 
     mostrarCantDeVuelosPorCiudad();
 
-    hacerReserva();
-
+    mostrarPlazasRechazadas();
 
     return 0;
 }
@@ -115,89 +114,73 @@ int vuelosParaCiudad(int idCiudad)
 
     return contadorVuelos;
 }
-
 /*
--agarro una reserva.
--le paso el id de vuelo y la cantidad de pasajeros a la estruct VUELOS
--le resto la cantidad de reservas y actualizo si tiene capacidad para seguir haciendo reservas
-- devuelvo, para cada vuelo, las plazas rechazadas y si el vuelo sale o no completo
-
-
-*/
-
-/*
-
-FALTA QUE SE ACTUALICE SOLO LA CAPACIDAD DE LOS VUELOS Y MOSTAR UNA SOLA VEZ X VUELO.
-FALTA HACERLO TODO DENTRO DE UNA MISMA APERTURA DE ARCHIVO
-
-*/
-
-
-void hacerReserva()
+int cmpRechazadasId(Rechazadas r, int id)
 {
-    FILE* reservas = fopen("RESERVAS.dat", "rb");
+    return r.idReservas - id;
+}
+
+int buscarReserva(Coll<Rechazadas> &collRechazadas, int id)
+{
+    int posicion = collFind<Rechazadas, int>(collRechazadas, id, cmpRechazadasId, rechazadasFromString);
+
+    if (posicion < 0)
+    {
+        Rechazadas x = rechazadas(id, 0, 0);
+        posicion = collAdd<Rechazadas>(collRechazadas, x, rechazadasToString);
+    }
+
+    return posicion;
+}
+
+void mostrarPlazasRechazadas(Coll<Rechazadas> &collRechazadas)
+{
+    FILE *reservas = fopen("RESERVAS.dat", "rb");
 
     Reserva unaReserva = read<Reserva>(reservas);
 
     while (!feof(reservas))
     {
-        int idVuelo = unaReserva.idVue;
-        int capacidad = unaReserva.cant;
 
-        int capacidadFinal = capacidadDelVuelo(idVuelo, capacidad);
-        
-            if(capacidadFinal==0)
-            {
-                cout<<"El vuelo " <<idVuelo<<" sale completo"<<endl;
-            }
+        int pos = buscarReserva(collRechazadas, unaReserva.idVue);
 
-            if(capacidadFinal>0)
-            {
-                cout<<"El vuelo " <<idVuelo<<" sale incompleto"<<endl;
-                cout<<"Capacidad final: "<<capacidadFinal<<endl;
-            }
+        Rechazadas rechazadas = collGetAt<Rechazadas>(collRechazadas, pos, rechazadasFromString);
 
-            if(capacidadFinal<0)
-            {
-                cout <<"Plazas Rechazadas del vuelo " <<idVuelo<<" : "<<abs(capacidadFinal)<<"  El vuelo sale completo"<<endl;
-            }
+        rechazadas.cantidad += unaReserva.cant;
+
+        collSetAt<Rechazadas>(collRechazadas, rechazadas, pos, rechazadasToString);
+
+        int plazasRechazadas = capacidadMenosCantidad(rechazadas.cantidad, unaReserva.idVue);
 
         unaReserva = read<Reserva>(reservas);
     }
+
     fclose(reservas);
-    
 }
 
-int capacidadDelVuelo(int idVuelo, int capacidad)
+int capacidadMenosCantidad(int cantidadDeReserva, int idReserva)
 {
-    FILE* vuelos = fopen("VUELOS.dat", "rb");
+    FILE *vuelos = fopen("VUELOS.dat", "rb");
 
     Vuelo unVuelo = read<Vuelo>(vuelos);
-     int capacidadVuelo = unVuelo.cap;
 
-    while(!feof(vuelos))
+    int idVuelo = unVuelo.idVue;
+    int capacidad = unVuelo.cap;
+
+    while (!feof(vuelos))
     {
-        int idQueBusco=unVuelo.idVue;
-        
-
-        if(idQueBusco==idVuelo)
+        if (idVuelo == idReserva)
         {
-            capacidadVuelo = unVuelo.cap;
-            capacidadVuelo-=capacidad;
-           
+            return capacidad - cantidadDeReserva >= 0 ? 0 : abs(capacidad - cantidadDeReserva);
         }
 
         unVuelo = read<Vuelo>(vuelos);
-        
     }
 
+    return 0;
 
-
-
-    return  capacidadVuelo;
- 
-
+    fclose(vuelos);
 }
-
+*/
 
 #endif

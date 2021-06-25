@@ -16,19 +16,30 @@ using namespace std;
 
 Coll<REquipo> subirEquipos()
 {
+    cout << "1" << endl;
+
     Coll<REquipo> ret = coll<REquipo>();
+    cout << "2" << endl;
 
     FILE *f = fopen("EQUIPOS.dat", "r+b");
+    cout << "3" << endl;
 
     Equipo eq = read<Equipo>(f);
+    cout << "4" << endl;
     while (!feof(f))
     {
+        cout << "5" << endl;
         REquipo re = rEquipo(eq, 0);
+        cout << "6" << endl;
         collAdd<REquipo>(ret, re, rEquipoToString);
+        cout << "7" << endl;
         eq = read<Equipo>(f);
+        cout << "8" << endl;
     }
+    cout << "9" << endl;
 
     fclose(f);
+    cout << "10" << endl;
     return ret;
 }
 
@@ -155,11 +166,14 @@ void mostrarRankingLocalidades(Coll<RLoc> c)
 
 int main()
 {
+    cout << "1 Main" << endl;
     // subo los equipos
     Coll<REquipo> collEq = subirEquipos();
+    cout << "2 Main" << endl;
 
     // coleccion de estadios
     Coll<REstadio> collEst = coll<REstadio>();
+    cout << "3 Main" << endl;
 
     // localidades
     Coll<RLoc> collLoc = coll<RLoc>();
